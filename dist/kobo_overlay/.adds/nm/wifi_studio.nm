@@ -1,0 +1,8 @@
+# Kobo Wireless Studio — NickelMenu Configuration
+# Copy to /mnt/onboard/.adds/nm/wifi_studio.nm
+
+experimental : menu_main_15505_label : Tiện ích
+experimental : menu_main_15505_icon : /mnt/onboard/.adds/koreader/resources/icons/mdlight/appbar.settings.svg
+
+menu_item : main : Chép sách Wi-Fi (Bật/Tắt) : cmd_output : 500 : /bin/sh /mnt/onboard/.adds/tools/wifi_files.sh
+menu_item : main : Quét lại sách mới : nickel_misc : rescan_books_full

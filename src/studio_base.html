@@ -1,0 +1,1714 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Kobo Aura Edition 2 — Wireless Studio (Web &amp; FTP)</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231856F3' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='4' y='2' width='16' height='20' rx='2.5'/%3E%3Cline x1='8' y1='7' x2='16' y2='7'/%3E%3Cline x1='8' y1='11' x2='16' y2='11'/%3E%3Cline x1='8' y1='15' x2='12' y2='15'/%3E%3Ccircle cx='12' cy='19' r='0.8' fill='%231856F3'/%3E%3C/svg%3E">
+<style>
+:root {
+  --bg: #f6f6f3;
+  --surface: #ffffff;
+  --surface-subtle: #faf9f6;
+  --surface-hover: #f2f1ec;
+  --ink: #141413;
+  --ink-secondary: #52514e;
+  --ink-muted: #85837e;
+  --border: #e5e4df;
+  --border-strong: #cfcec7;
+  --accent: #1856f3;
+  --accent-hover: #1244c9;
+  --accent-soft: rgba(24, 86, 243, 0.07);
+  --accent-border: rgba(24, 86, 243, 0.28);
+  --ok: #137a47;
+  --ok-soft: rgba(19, 122, 71, 0.09);
+  --ok-border: rgba(19, 122, 71, 0.25);
+  --danger: #c92a2a;
+  --danger-soft: rgba(201, 42, 42, 0.08);
+  --danger-border: rgba(201, 42, 42, 0.25);
+  --warn: #b45309;
+  --warn-soft: rgba(180, 83, 9, 0.1);
+  --violet: #6d28d9;
+  --violet-soft: rgba(109, 40, 217, 0.09);
+  --teal: #0f766e;
+  --teal-soft: rgba(15, 118, 110, 0.09);
+  --shadow-sm: 0 1px 2px rgba(15, 18, 22, 0.04);
+  --shadow-md: 0 8px 24px rgba(15, 18, 22, 0.08);
+  --radius-lg: 14px;
+  --radius-md: 10px;
+  --radius-sm: 8px;
+}
+
+[data-theme="dark"] {
+  --bg: #0d0f13;
+  --surface: #15181f;
+  --surface-subtle: #1b1f28;
+  --surface-hover: #212632;
+  --ink: #f1f3f6;
+  --ink-secondary: #a3abb8;
+  --ink-muted: #6c7584;
+  --border: #252b36;
+  --border-strong: #353d4d;
+  --accent: #528bff;
+  --accent-hover: #6e9fff;
+  --accent-soft: rgba(82, 139, 255, 0.12);
+  --accent-border: rgba(82, 139, 255, 0.34);
+  --ok: #34d399;
+  --ok-soft: rgba(52, 211, 153, 0.12);
+  --ok-border: rgba(52, 211, 153, 0.28);
+  --danger: #f87171;
+  --danger-soft: rgba(248, 113, 113, 0.12);
+  --danger-border: rgba(248, 113, 113, 0.28);
+  --warn: #fbbf24;
+  --warn-soft: rgba(251, 191, 36, 0.13);
+  --violet: #a78bfa;
+  --violet-soft: rgba(167, 139, 250, 0.14);
+  --teal: #2dd4bf;
+  --teal-soft: rgba(45, 212, 191, 0.13);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.25);
+  --shadow-md: 0 12px 32px rgba(0, 0, 0, 0.45);
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; overflow-x: hidden; }
+body {
+  font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  line-height: 1.5;
+  font-size: 14px;
+  -webkit-font-smoothing: antialiased;
+  transition: background-color .18s ease, color .18s ease;
+}
+
+.ico {
+  width: 16px;
+  height: 16px;
+  stroke: currentColor;
+  stroke-width: 1.85;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+  flex-shrink: 0;
+  vertical-align: middle;
+}
+.ico-sm { width: 14px; height: 14px; }
+.ico-lg { width: 20px; height: 20px; }
+.ico-xl { width: 26px; height: 26px; stroke-width: 1.65; }
+
+.container {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 22px 18px 56px;
+}
+
+/* Top Header */
+.topbar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+.brand-mark {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: var(--ink);
+  color: var(--surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: var(--shadow-sm);
+}
+.brand-text {
+  min-width: 0;
+}
+.brand-text h1 {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 650;
+  letter-spacing: -0.015em;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--ok-soft);
+  color: var(--ok);
+  border: 1px solid var(--ok-border);
+}
+.status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--ok);
+}
+.brand-sub {
+  font-size: 12.5px;
+  color: var(--ink-muted);
+  margin-top: 1px;
+}
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.storage-widget {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 7px 13px;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+}
+.storage-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 176px;
+}
+.storage-row {
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+  color: var(--ink-secondary);
+  font-weight: 550;
+  white-space: nowrap;
+}
+.storage-track {
+  width: 100%;
+  height: 6px;
+  background: var(--surface-hover);
+  border-radius: 99px;
+  overflow: hidden;
+}
+.storage-fill {
+  height: 100%;
+  width: 0%;
+  background: var(--accent);
+  border-radius: 99px;
+  transition: width .3s ease;
+}
+
+.icon-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--ink-secondary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all .15s ease;
+  box-shadow: var(--shadow-sm);
+}
+.icon-btn:hover {
+  background: var(--surface-hover);
+  color: var(--ink);
+  border-color: var(--border-strong);
+}
+
+/* Transfer Grid (Web + FTP) */
+.hub-grid {
+  display: grid;
+  grid-template-columns: 1.35fr 1fr;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+.hub-grid > * {
+  min-width: 0;
+}
+@media (max-width: 840px) {
+  .hub-grid { grid-template-columns: 1fr; }
+}
+
+.card {
+  min-width: 0;
+  max-width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 18px;
+  box-shadow: var(--shadow-sm);
+}
+.card-hdr {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.card-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14.5px;
+  font-weight: 650;
+  color: var(--ink);
+  margin: 0;
+}
+.badge-proto {
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: var(--surface-subtle);
+  border: 1px solid var(--border);
+  color: var(--ink-secondary);
+}
+
+/* Dropzone */
+.dropzone {
+  border: 1.5px dashed var(--accent-border);
+  background: var(--accent-soft);
+  border-radius: var(--radius-md);
+  padding: 22px 18px;
+  text-align: center;
+  cursor: pointer;
+  transition: all .16s ease;
+}
+.dropzone:hover, .dropzone.drag {
+  border-color: var(--accent);
+  background: rgba(24, 86, 243, 0.11);
+}
+.dz-icon-wrap {
+  width: 44px;
+  height: 44px;
+  margin: 0 auto 10px;
+  border-radius: 50%;
+  background: var(--surface);
+  color: var(--accent);
+  border: 1px solid var(--accent-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-sm);
+}
+.dz-headline {
+  font-size: 14.5px;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 4px;
+}
+.dz-headline span { color: var(--accent); text-decoration: underline; text-underline-offset: 2px; }
+.dz-sub {
+  font-size: 12.5px;
+  color: var(--ink-secondary);
+  margin-bottom: 10px;
+}
+.dz-formats {
+  display: inline-flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 5px;
+  align-items: center;
+}
+.fmt-chip {
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: 5px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--ink-secondary);
+}
+.target-chip {
+  margin-top: 10px;
+  font-size: 12px;
+  color: var(--ink-secondary);
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+.target-chip code {
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-weight: 600;
+  color: var(--accent);
+  background: var(--surface);
+  padding: 2px 7px;
+  border-radius: 5px;
+  border: 1px solid var(--border);
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+/* Progress Box */
+.prog-box {
+  display: none;
+  margin-top: 12px;
+  padding: 11px 13px;
+  border-radius: var(--radius-md);
+  background: var(--surface-subtle);
+  border: 1px solid var(--border);
+  min-width: 0;
+  max-width: 100%;
+}
+.prog-meta {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--ink);
+  margin-bottom: 7px;
+  min-width: 0;
+}
+.prog-meta span:first-child {
+  flex: 1;
+  min-width: 0;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  line-height: 1.42;
+}
+.prog-speed {
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  color: var(--accent);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.prog-track {
+  height: 7px;
+  background: var(--border);
+  border-radius: 99px;
+  overflow: hidden;
+}
+.prog-bar {
+  height: 100%;
+  width: 0%;
+  background: var(--accent);
+  border-radius: 99px;
+  transition: width .12s linear;
+}
+
+.note-bar {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-top: 12px;
+  padding: 9px 11px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-subtle);
+  border: 1px solid var(--border);
+  font-size: 12.5px;
+  color: var(--ink-secondary);
+}
+.note-bar .ico { color: var(--accent); margin-top: 2px; }
+
+/* FTP Studio Card */
+.ftp-desc {
+  font-size: 12.5px;
+  color: var(--ink-secondary);
+  margin: 0 0 11px;
+}
+.ftp-uri-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 10px 8px 12px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-subtle);
+  border: 1px solid var(--border-strong);
+  margin-bottom: 10px;
+  min-width: 0;
+}
+.ftp-uri-code {
+  flex: 1;
+  min-width: 0;
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.ftp-uri-box .btn {
+  flex-shrink: 0;
+}
+.ftp-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+.ftp-cell {
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-subtle);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: border-color .14s ease, background-color .14s ease;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 6px;
+}
+.ftp-cell:hover {
+  border-color: var(--accent);
+  background: var(--surface-hover);
+}
+.ftp-lbl {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--ink-muted);
+  display: block;
+}
+.ftp-val {
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+}
+.ftp-cell .ico { color: var(--ink-muted); }
+.ftp-cell:hover .ico { color: var(--accent); }
+
+/* Buttons */
+.btn {
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--ink);
+  padding: 6.5px 11px;
+  border-radius: var(--radius-sm);
+  font-size: 12.5px;
+  font-weight: 550;
+  font-family: inherit;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all .14s ease;
+  white-space: nowrap;
+}
+.btn:hover {
+  background: var(--surface-hover);
+  border-color: var(--border-strong);
+}
+.btn.primary {
+  background: var(--accent);
+  color: #ffffff;
+  border-color: var(--accent);
+}
+.btn.primary:hover {
+  background: var(--accent-hover);
+  border-color: var(--accent-hover);
+}
+.btn.ghost-danger {
+  color: var(--ink-secondary);
+}
+.btn.ghost-danger:hover {
+  color: var(--danger);
+  border-color: var(--danger-border);
+  background: var(--danger-soft);
+}
+.btn.danger-solid {
+  background: var(--danger);
+  color: #ffffff;
+  border-color: var(--danger);
+}
+.btn-sm {
+  padding: 5px 9px;
+  font-size: 12px;
+}
+
+/* Explorer Navigation & Toolbar */
+.nav-strip {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding-bottom: 13px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 12px;
+}
+.nav-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.tab-btn {
+  border: 1px solid var(--border);
+  background: var(--surface-subtle);
+  color: var(--ink-secondary);
+  padding: 6px 11px;
+  border-radius: var(--radius-sm);
+  font-size: 12.5px;
+  font-weight: 550;
+  font-family: inherit;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all .14s ease;
+}
+.tab-btn:hover {
+  color: var(--ink);
+  background: var(--surface-hover);
+}
+.tab-btn.active {
+  background: var(--ink);
+  color: var(--surface);
+  border-color: var(--ink);
+}
+
+/* Toggle Switch */
+.switch-lbl {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12.5px;
+  color: var(--ink-secondary);
+  cursor: pointer;
+  user-select: none;
+}
+.switch-lbl input { display: none; }
+.switch-track {
+  width: 32px;
+  height: 18px;
+  background: var(--border-strong);
+  border-radius: 99px;
+  position: relative;
+  transition: background-color .16s ease;
+}
+.switch-thumb {
+  width: 14px;
+  height: 14px;
+  background: #ffffff;
+  border-radius: 50%;
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  transition: transform .16s ease;
+}
+.switch-lbl input:checked + .switch-track { background: var(--accent); }
+.switch-lbl input:checked + .switch-track .switch-thumb { transform: translateX(14px); }
+
+/* Path & Search Bar */
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.breadcrumbs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  font-size: 13px;
+  min-width: 0;
+  max-width: 100%;
+}
+.crumb {
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-weight: 600;
+  color: var(--ink-secondary);
+  padding: 3px 7px;
+  border-radius: 6px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background-color .12s;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+.crumb:hover { background: var(--surface-hover); color: var(--ink); }
+.crumb.current { color: var(--ink); background: var(--surface-subtle); border: 1px solid var(--border); }
+.crumb-sep { color: var(--ink-muted); display: inline-flex; }
+
+.toolbar-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 7px;
+}
+.search-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.search-wrap .ico {
+  position: absolute;
+  left: 9px;
+  color: var(--ink-muted);
+  pointer-events: none;
+}
+.search-input {
+  padding: 6px 10px 6px 30px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--surface-subtle);
+  color: var(--ink);
+  font-size: 12.5px;
+  font-family: inherit;
+  width: 190px;
+  outline: none;
+  transition: border-color .14s ease, background-color .14s ease;
+}
+.search-input:focus {
+  border-color: var(--accent);
+  background: var(--surface);
+}
+
+/* File Table */
+.table-wrap {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  max-width: 100%;
+}
+table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+  font-size: 13.5px;
+}
+th, td {
+  padding: 10px 12px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+th {
+  background: var(--surface-subtle);
+  font-size: 11.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--ink-muted);
+  user-select: none;
+}
+th.col-kind { width: 106px; }
+th.col-size { width: 112px; }
+th.col-date { width: 142px; }
+th.col-acts { width: 152px; text-align: right; }
+th.sortable { cursor: pointer; }
+th.sortable:hover { color: var(--ink); }
+tbody tr:last-child td { border-bottom: none; }
+tbody tr:hover td { background: var(--surface-subtle); }
+
+.item-cell {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  min-width: 0;
+}
+.file-badge-ico {
+  width: 30px;
+  height: 30px;
+  border-radius: 7px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.t-dir { background: var(--accent-soft); color: var(--accent); }
+.t-kepub { background: var(--ok-soft); color: var(--ok); }
+.t-epub { background: var(--accent-soft); color: var(--accent); }
+.t-pdf { background: var(--warn-soft); color: var(--warn); }
+.t-font { background: var(--violet-soft); color: var(--violet); }
+.t-img { background: var(--teal-soft); color: var(--teal); }
+.t-other { background: var(--surface-hover); color: var(--ink-secondary); }
+
+.fname {
+  flex: 1;
+  min-width: 0;
+  padding-top: 5px;
+  line-height: 1.42;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  font-weight: 520;
+  color: var(--ink);
+  text-decoration: none;
+  cursor: pointer;
+}
+.fname:hover { color: var(--accent); }
+.fname.dir { font-weight: 620; }
+
+.kind-pill {
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: 5px;
+  display: inline-block;
+}
+
+.meta {
+  color: var(--ink-secondary);
+  font-size: 12.5px;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.acts {
+  text-align: right;
+  white-space: nowrap;
+}
+.acts-inner {
+  display: inline-flex;
+  gap: 5px;
+  justify-content: flex-end;
+}
+
+.table-footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: space-between;
+  align-items: center;
+  padding: 9px 12px;
+  background: var(--surface-subtle);
+  border-top: 1px solid var(--border);
+  font-size: 12px;
+  color: var(--ink-muted);
+}
+
+/* Toast */
+.toast {
+  display: none;
+  align-items: flex-start;
+  gap: 9px;
+  padding: 11px 14px;
+  border-radius: var(--radius-md);
+  margin-bottom: 14px;
+  font-size: 13px;
+  font-weight: 550;
+  box-shadow: var(--shadow-sm);
+  max-width: 100%;
+}
+.toast .ico {
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+#toastText {
+  flex: 1;
+  min-width: 0;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  line-height: 1.42;
+}
+.toast.ok {
+  display: flex;
+  background: var(--ok-soft);
+  color: var(--ok);
+  border: 1px solid var(--ok-border);
+}
+.toast.err {
+  display: flex;
+  background: var(--danger-soft);
+  color: var(--danger);
+  border: 1px solid var(--danger-border);
+}
+
+/* Custom Modal */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 12, 16, 0.52);
+  backdrop-filter: blur(2px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  z-index: 100;
+}
+.modal-backdrop.open { display: flex; }
+.modal-card {
+  width: 100%;
+  max-width: 420px;
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  box-shadow: var(--shadow-md);
+}
+.modal-hdr {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+.modal-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  font-weight: 650;
+  margin: 0;
+}
+.modal-body {
+  font-size: 13.5px;
+  color: var(--ink-secondary);
+  margin-bottom: 16px;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+.modal-body code,
+.modal-body strong {
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+.modal-input {
+  width: 100%;
+  padding: 9px 11px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-strong);
+  background: var(--surface-subtle);
+  color: var(--ink);
+  font-size: 13.5px;
+  font-family: inherit;
+  outline: none;
+  margin-top: 8px;
+}
+.modal-input:focus { border-color: var(--accent); background: var(--surface); }
+.modal-ftr {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+@media (max-width: 680px) {
+  .hide-sm { display: none; }
+  .search-input { width: 140px; }
+  th, td { padding: 9px 8px; }
+  th.col-size { width: 86px; }
+  th.col-acts { width: 138px; }
+  .acts { white-space: normal; }
+  .acts-inner { flex-wrap: wrap; gap: 4px; }
+  .acts .btn-sm { padding: 4px 7px; font-size: 11.5px; }
+}
+</style>
+</head>
+<body>
+
+<!-- Inline Vector Icon Sprite (Zero External Dependencies, Zero Emojis) -->
+<svg style="display:none" aria-hidden="true">
+  <symbol id="ico-kobo" viewBox="0 0 24 24">
+    <rect x="4" y="2" width="16" height="20" rx="2.5"/>
+    <line x1="8" y1="7" x2="16" y2="7"/>
+    <line x1="8" y1="10.5" x2="16" y2="10.5"/>
+    <line x1="8" y1="14" x2="13" y2="14"/>
+    <line x1="10.5" y1="18.5" x2="13.5" y2="18.5"/>
+  </symbol>
+  <symbol id="ico-drive" viewBox="0 0 24 24">
+    <line x1="22" y1="12" x2="2" y2="12"/>
+    <path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/>
+    <line x1="6" y1="16" x2="6.01" y2="16"/>
+    <line x1="10" y1="16" x2="10.01" y2="16"/>
+  </symbol>
+  <symbol id="ico-sun" viewBox="0 0 24 24">
+    <circle cx="12" cy="12" r="4"/>
+    <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>
+  </symbol>
+  <symbol id="ico-moon" viewBox="0 0 24 24">
+    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+  </symbol>
+  <symbol id="ico-upload" viewBox="0 0 24 24">
+    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+    <polyline points="17 8 12 3 7 8"/>
+    <line x1="12" y1="3" x2="12" y2="15"/>
+  </symbol>
+  <symbol id="ico-server" viewBox="0 0 24 24">
+    <rect x="2" y="3" width="20" height="7" rx="2"/>
+    <rect x="2" y="14" width="20" height="7" rx="2"/>
+    <line x1="6" y1="6.5" x2="6.01" y2="6.5"/>
+    <line x1="6" y1="17.5" x2="6.01" y2="17.5"/>
+  </symbol>
+  <symbol id="ico-copy" viewBox="0 0 24 24">
+    <rect x="9" y="9" width="13" height="13" rx="2"/>
+    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+  </symbol>
+  <symbol id="ico-check" viewBox="0 0 24 24">
+    <polyline points="20 6 9 17 4 12"/>
+  </symbol>
+  <symbol id="ico-alert" viewBox="0 0 24 24">
+    <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+    <line x1="12" y1="9" x2="12" y2="13"/>
+    <line x1="12" y1="17" x2="12.01" y2="17"/>
+  </symbol>
+  <symbol id="ico-info" viewBox="0 0 24 24">
+    <circle cx="12" cy="12" r="10"/>
+    <line x1="12" y1="16" x2="12" y2="12"/>
+    <line x1="12" y1="8" x2="12.01" y2="8"/>
+  </symbol>
+  <symbol id="ico-book" viewBox="0 0 24 24">
+    <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+    <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+  </symbol>
+  <symbol id="ico-kepub" viewBox="0 0 24 24">
+    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+    <polyline points="10 2 10 10 13 7.5 16 10 16 2"/>
+  </symbol>
+  <symbol id="ico-file-text" viewBox="0 0 24 24">
+    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+    <polyline points="14 2 14 8 20 8"/>
+    <line x1="16" y1="13" x2="8" y2="13"/>
+    <line x1="16" y1="17" x2="8" y2="17"/>
+  </symbol>
+  <symbol id="ico-type" viewBox="0 0 24 24">
+    <polyline points="4 7 4 4 20 4 20 7"/>
+    <line x1="9" y1="20" x2="15" y2="20"/>
+    <line x1="12" y1="4" x2="12" y2="20"/>
+  </symbol>
+  <symbol id="ico-image" viewBox="0 0 24 24">
+    <rect x="3" y="3" width="18" height="18" rx="2"/>
+    <circle cx="8.5" cy="8.5" r="1.5"/>
+    <polyline points="21 15 16 10 5 21"/>
+  </symbol>
+  <symbol id="ico-folder" viewBox="0 0 24 24">
+    <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+  </symbol>
+  <symbol id="ico-folder-plus" viewBox="0 0 24 24">
+    <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+    <line x1="12" y1="11" x2="12" y2="17"/>
+    <line x1="9" y1="14" x2="15" y2="14"/>
+  </symbol>
+  <symbol id="ico-arrow-up" viewBox="0 0 24 24">
+    <polyline points="9 14 4 9 9 4"/>
+    <path d="M20 20v-7a4 4 0 0 0-4-4H4"/>
+  </symbol>
+  <symbol id="ico-refresh" viewBox="0 0 24 24">
+    <polyline points="23 4 23 10 17 10"/>
+    <polyline points="1 20 1 14 7 14"/>
+    <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+  </symbol>
+  <symbol id="ico-search" viewBox="0 0 24 24">
+    <circle cx="11" cy="11" r="8"/>
+    <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+  </symbol>
+  <symbol id="ico-download" viewBox="0 0 24 24">
+    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+    <polyline points="7 10 12 15 17 10"/>
+    <line x1="12" y1="15" x2="12" y2="3"/>
+  </symbol>
+  <symbol id="ico-trash" viewBox="0 0 24 24">
+    <polyline points="3 6 5 6 21 6"/>
+    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+  </symbol>
+  <symbol id="ico-chevron-right" viewBox="0 0 24 24">
+    <polyline points="9 18 15 12 9 6"/>
+  </symbol>
+  <symbol id="ico-file" viewBox="0 0 24 24">
+    <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/>
+    <polyline points="13 2 13 9 20 9"/>
+  </symbol>
+  <symbol id="ico-x" viewBox="0 0 24 24">
+    <line x1="18" y1="6" x2="6" y2="18"/>
+    <line x1="6" y1="6" x2="18" y2="18"/>
+  </symbol>
+</svg>
+
+<div class="container">
+  <!-- Header -->
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark">
+        <svg class="ico ico-lg"><use href="#ico-kobo"/></svg>
+      </div>
+      <div class="brand-text">
+        <h1>
+          Kobo Aura Edition 2
+          <span class="status-pill"><span class="status-dot"></span>LAN Trực tuyến</span>
+        </h1>
+        <div class="brand-sub">Trạm quản lý thư viện không dây • HTTP Stream &amp; FTP Server</div>
+      </div>
+    </div>
+
+    <div class="topbar-right">
+      <div class="storage-widget">
+        <svg class="ico ico-lg" style="color:var(--accent);flex-shrink:0"><use href="#ico-drive"/></svg>
+        <div class="storage-meta">
+          <div class="storage-row">
+            <span id="diskFreeText">Đang đọc bộ nhớ...</span>
+          </div>
+          <div class="storage-track">
+            <div class="storage-fill" id="diskFill"></div>
+          </div>
+        </div>
+      </div>
+
+      <button class="icon-btn" id="themeBtn" onclick="toggleTheme()" title="Chuyển giao diện Sáng / Tối">
+        <svg class="ico" id="themeIcon"><use href="#ico-moon"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <div id="toast" class="toast">
+    <svg class="ico" id="toastIcon"><use href="#ico-check"/></svg>
+    <span id="toastText"></span>
+  </div>
+
+  <!-- Web Upload + FTP Hub -->
+  <section class="hub-grid">
+    <!-- HTTP Upload Card -->
+    <div class="card">
+      <div class="card-hdr">
+        <h2 class="card-title">
+          <svg class="ico" style="color:var(--accent)"><use href="#ico-upload"/></svg>
+          Tải sách lên qua trình duyệt
+        </h2>
+        <span class="badge-proto">HTTP :8080</span>
+      </div>
+
+      <input type="file" id="fileInput" multiple style="display:none">
+      <div class="dropzone" id="dropzone" onclick="document.getElementById('fileInput').click()">
+        <div class="dz-icon-wrap">
+          <svg class="ico ico-xl"><use href="#ico-upload"/></svg>
+        </div>
+        <div class="dz-headline">Kéo thả tệp vào đây hoặc <span>chọn từ thiết bị</span></div>
+        <div class="dz-sub">Truyền luồng trực tiếp qua mạng LAN nội bộ, không giới hạn dung lượng tệp</div>
+        <div class="dz-formats">
+          <span class="fmt-chip">.KEPUB.EPUB</span>
+          <span class="fmt-chip">.EPUB</span>
+          <span class="fmt-chip">.PDF</span>
+          <span class="fmt-chip">.MOBI</span>
+          <span class="fmt-chip">.TTF / .OTF</span>
+        </div>
+        <div class="target-chip">Thư mục đích hiện tại: <code id="uploadTargetLabel">/Books</code></div>
+      </div>
+
+      <div class="prog-box" id="progBox">
+        <div class="prog-meta">
+          <span id="progName">Đang chuẩn bị tải lên...</span>
+          <span class="prog-speed" id="progSpeed">0%</span>
+        </div>
+        <div class="prog-track"><div class="prog-bar" id="progBar"></div></div>
+      </div>
+
+      <div class="note-bar">
+        <svg class="ico"><use href="#ico-info"/></svg>
+        <div>
+          <strong>KOReader</strong> nhận sách mới tức thì. Nếu đọc ở giao diện gốc Kobo, sau khi chép xong hãy bấm <strong>Tiện ích → Quét lại sách mới</strong>.
+        </div>
+      </div>
+    </div>
+
+    <!-- FTP Server Info Card -->
+    <div class="card">
+      <div class="card-hdr">
+        <h2 class="card-title">
+          <svg class="ico" style="color:var(--accent)"><use href="#ico-server"/></svg>
+          Kết nối máy chủ FTP
+        </h2>
+        <span class="badge-proto">FTP :1021</span>
+      </div>
+
+      <p class="ftp-desc">
+        Dành cho Windows File Explorer, FileZilla, WinSCP hoặc ứng dụng quản lý tệp trên điện thoại để đồng bộ cả thư mục lớn.
+      </p>
+
+      <div class="ftp-uri-box">
+        <code class="ftp-uri-code" id="ftpFullUri">ftp://root:kobo@192.168.1.100:1021</code>
+        <button class="btn btn-sm primary" onclick="copyText(getFtpUri(), this)">
+          <svg class="ico ico-sm"><use href="#ico-copy"/></svg>
+          <span>Sao chép</span>
+        </button>
+      </div>
+
+      <div class="ftp-grid">
+        <div class="ftp-cell" onclick="copyText(getHostIp(), this)" title="Bấm để sao chép địa chỉ IP">
+          <div>
+            <span class="ftp-lbl">Máy chủ (Host)</span>
+            <span class="ftp-val" id="ftpHostVal">192.168.1.100</span>
+          </div>
+          <svg class="ico ico-sm"><use href="#ico-copy"/></svg>
+        </div>
+
+        <div class="ftp-cell" onclick="copyText('1021', this)" title="Bấm để sao chép cổng FTP">
+          <div>
+            <span class="ftp-lbl">Cổng (Port)</span>
+            <span class="ftp-val">1021</span>
+          </div>
+          <svg class="ico ico-sm"><use href="#ico-copy"/></svg>
+        </div>
+
+        <div class="ftp-cell" onclick="copyText('root', this)" title="Bấm để sao chép tài khoản">
+          <div>
+            <span class="ftp-lbl">Tài khoản</span>
+            <span class="ftp-val">root</span>
+          </div>
+          <svg class="ico ico-sm"><use href="#ico-copy"/></svg>
+        </div>
+
+        <div class="ftp-cell" onclick="copyText('kobo', this)" title="Bấm để sao chép mật khẩu">
+          <div>
+            <span class="ftp-lbl">Mật khẩu</span>
+            <span class="ftp-val">kobo</span>
+          </div>
+          <svg class="ico ico-sm"><use href="#ico-copy"/></svg>
+        </div>
+      </div>
+
+      <div class="note-bar" style="margin-top:11px">
+        <svg class="ico"><use href="#ico-drive"/></svg>
+        <div>Dán thẳng địa chỉ <code>ftp://...</code> ở trên vào thanh địa chỉ <strong>This PC (File Explorer)</strong> trên Windows để mở như ổ đĩa.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- File Explorer Card -->
+  <section class="card">
+    <div class="nav-strip">
+      <div class="nav-tabs" id="quickTabs">
+        <button class="tab-btn active" data-dir="/Books" onclick="goDir('/Books')">
+          <svg class="ico"><use href="#ico-book"/></svg>
+          Thư viện Sách
+        </button>
+        <button class="tab-btn" data-dir="/" onclick="goDir('/')">
+          <svg class="ico"><use href="#ico-drive"/></svg>
+          Bộ nhớ gốc
+        </button>
+        <button class="tab-btn" data-dir="/fonts" onclick="goDir('/fonts')">
+          <svg class="ico"><use href="#ico-type"/></svg>
+          Phông chữ
+        </button>
+        <button class="tab-btn" data-dir="/.kobo/screensaver" onclick="goDir('/.kobo/screensaver')">
+          <svg class="ico"><use href="#ico-image"/></svg>
+          Hình nền ngủ
+        </button>
+      </div>
+
+      <label class="switch-lbl">
+        <input type="checkbox" id="showHidden" onchange="loadDir(currentDir)">
+        <span class="switch-track"><span class="switch-thumb"></span></span>
+        <span>Hiện thư mục ẩn</span>
+      </label>
+    </div>
+
+    <div class="toolbar">
+      <nav class="breadcrumbs" id="breadcrumbs"></nav>
+
+      <div class="toolbar-actions">
+        <div class="search-wrap">
+          <svg class="ico ico-sm"><use href="#ico-search"/></svg>
+          <input type="text" class="search-input" id="searchInput" placeholder="Lọc nhanh tên tệp..." oninput="renderTable()">
+        </div>
+        <button class="btn" onclick="goUp()" title="Lên thư mục cha">
+          <svg class="ico"><use href="#ico-arrow-up"/></svg>
+          <span>Lên 1 cấp</span>
+        </button>
+        <button class="btn" onclick="openFolderModal()">
+          <svg class="ico"><use href="#ico-folder-plus"/></svg>
+          <span>Thư mục mới</span>
+        </button>
+        <button class="btn" onclick="loadDir(currentDir)" title="Tải lại danh sách">
+          <svg class="ico"><use href="#ico-refresh"/></svg>
+          <span class="hide-sm">Làm mới</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th class="sortable col-name" onclick="setSort('name')">Tên tệp / Thư mục <span id="sort-name">↑</span></th>
+            <th class="hide-sm col-kind">Định dạng</th>
+            <th class="sortable col-size" onclick="setSort('size')">Dung lượng <span id="sort-size"></span></th>
+            <th class="sortable hide-sm col-date" onclick="setSort('mtime')">Cập nhật <span id="sort-mtime"></span></th>
+            <th class="col-acts">Thao tác</th>
+          </tr>
+        </thead>
+        <tbody id="fileList">
+          <tr><td colspan="5" style="text-align:center;color:var(--ink-muted);padding:28px">Đang tải danh sách tệp từ Kobo...</td></tr>
+        </tbody>
+      </table>
+      <div class="table-footer">
+        <span id="summaryCount">0 mục</span>
+        <span id="summarySize">Tổng dung lượng thư mục: 0 B</span>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- Create Folder Modal -->
+<div class="modal-backdrop" id="folderModal" onclick="if(event.target===this)closeFolderModal()">
+  <div class="modal-card">
+    <div class="modal-hdr">
+      <h3 class="modal-title">
+        <svg class="ico" style="color:var(--accent)"><use href="#ico-folder-plus"/></svg>
+        Tạo thư mục mới
+      </h3>
+      <button class="icon-btn" style="width:28px;height:28px" onclick="closeFolderModal()">
+        <svg class="ico ico-sm"><use href="#ico-x"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      Nhập tên thư mục muốn tạo bên trong <strong id="folderModalDir">/Books</strong>:
+      <input type="text" class="modal-input" id="newFolderName" placeholder="Ví dụ: Sách Tâm Lý" onkeydown="if(event.key==='Enter')submitNewFolder();if(event.key==='Escape')closeFolderModal()">
+    </div>
+    <div class="modal-ftr">
+      <button class="btn" onclick="closeFolderModal()">Hủy bỏ</button>
+      <button class="btn primary" onclick="submitNewFolder()">Tạo thư mục</button>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Confirm Modal -->
+<div class="modal-backdrop" id="deleteModal" onclick="if(event.target===this)closeDeleteModal()">
+  <div class="modal-card">
+    <div class="modal-hdr">
+      <h3 class="modal-title" style="color:var(--danger)">
+        <svg class="ico"><use href="#ico-alert"/></svg>
+        Xác nhận xóa
+      </h3>
+      <button class="icon-btn" style="width:28px;height:28px" onclick="closeDeleteModal()">
+        <svg class="ico ico-sm"><use href="#ico-x"/></svg>
+      </button>
+    </div>
+    <div class="modal-body" id="deleteModalMsg"></div>
+    <div class="modal-ftr">
+      <button class="btn" onclick="closeDeleteModal()">Giữ lại</button>
+      <button class="btn danger-solid" onclick="confirmDelete()">
+        <svg class="ico ico-sm"><use href="#ico-trash"/></svg>
+        Xóa vĩnh viễn
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+let currentDir = '/Books';
+let currentItems = [];
+let sortField = 'name';
+let sortAsc = true;
+let uploading = false;
+let pendingDeletePath = null;
+
+function getHostIp() {
+  const h = window.location.hostname;
+  return (h && h !== '') ? h : '192.168.1.100';
+}
+
+function getFtpUri() {
+  return 'ftp://root:kobo@' + getHostIp() + ':1021';
+}
+
+function initHostLabels() {
+  document.getElementById('ftpHostVal').textContent = getHostIp();
+  document.getElementById('ftpFullUri').textContent = getFtpUri();
+}
+
+function applyTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+  const useEl = document.querySelector('#themeIcon use');
+  if (useEl) useEl.setAttribute('href', theme === 'dark' ? '#ico-sun' : '#ico-moon');
+  try { localStorage.setItem('kobo_studio_theme', theme); } catch (_) {}
+}
+
+function toggleTheme() {
+  const cur = document.documentElement.getAttribute('data-theme') || 'light';
+  applyTheme(cur === 'dark' ? 'light' : 'dark');
+}
+
+(function initTheme() {
+  let saved = null;
+  try { saved = localStorage.getItem('kobo_studio_theme'); } catch (_) {}
+  if (saved === 'dark' || saved === 'light') {
+    applyTheme(saved);
+  } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    applyTheme('dark');
+  }
+  initHostLabels();
+})();
+
+function copyText(text, triggerEl) {
+  const finish = () => {
+    showToast('Đã sao chép vào bộ nhớ tạm: ' + text, false);
+    if (triggerEl) {
+      const useTag = triggerEl.querySelector('use');
+      const prevHref = useTag ? useTag.getAttribute('href') : null;
+      if (useTag) useTag.setAttribute('href', '#ico-check');
+      setTimeout(() => {
+        if (useTag && prevHref) useTag.setAttribute('href', prevHref);
+      }, 1500);
+    }
+  };
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(text).then(finish).catch(() => fallbackCopy(text, finish));
+  } else {
+    fallbackCopy(text, finish);
+  }
+}
+
+function fallbackCopy(text, cb) {
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.position = 'fixed';
+  ta.style.opacity = '0';
+  document.body.appendChild(ta);
+  ta.focus();
+  ta.select();
+  try { document.execCommand('copy'); cb(); }
+  catch (_) { showToast('Không thể tự động sao chép, vui lòng bôi đen thủ công.', true); }
+  document.body.removeChild(ta);
+}
+
+function fmtSize(b) {
+  if (b == null) return '—';
+  if (b < 1024) return b + ' B';
+  if (b < 1048576) return (b / 1024).toFixed(1) + ' KB';
+  if (b < 1073741824) return (b / 1048576).toFixed(1) + ' MB';
+  return (b / 1073741824).toFixed(2) + ' GB';
+}
+
+function fmtDate(ts) {
+  if (!ts) return '—';
+  const d = new Date(ts * 1000);
+  const pad = n => String(n).padStart(2, '0');
+  return pad(d.getDate()) + '/' + pad(d.getMonth() + 1) + '/' + d.getFullYear() + ' ' + pad(d.getHours()) + ':' + pad(d.getMinutes());
+}
+
+function showToast(msg, isErr) {
+  const el = document.getElementById('toast');
+  const txt = document.getElementById('toastText');
+  const icoUse = document.querySelector('#toastIcon use');
+  txt.textContent = msg;
+  if (icoUse) icoUse.setAttribute('href', isErr ? '#ico-alert' : '#ico-check');
+  el.className = 'toast ' + (isErr ? 'err' : 'ok');
+  clearTimeout(window._toastTimer);
+  window._toastTimer = setTimeout(() => { el.className = 'toast'; }, 5500);
+}
+
+function escHtml(s) {
+  return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+}
+
+function classifyItem(it) {
+  if (it.is_dir) {
+    return { cls: 't-dir', ico: 'ico-folder', label: 'THƯ MỤC' };
+  }
+  const lower = it.name.toLowerCase();
+  if (lower.endsWith('.kepub.epub') || lower.endsWith('.kepub')) {
+    return { cls: 't-kepub', ico: 'ico-kepub', label: 'KEPUB' };
+  }
+  if (lower.endsWith('.epub') || lower.endsWith('.mobi') || lower.endsWith('.azw3') || lower.endsWith('.fb2')) {
+    const ext = lower.split('.').pop().toUpperCase();
+    return { cls: 't-epub', ico: 'ico-book', label: ext };
+  }
+  if (lower.endsWith('.pdf') || lower.endsWith('.djvu') || lower.endsWith('.docx') || lower.endsWith('.txt')) {
+    const ext = lower.split('.').pop().toUpperCase();
+    return { cls: 't-pdf', ico: 'ico-file-text', label: ext };
+  }
+  if (lower.endsWith('.ttf') || lower.endsWith('.otf')) {
+    return { cls: 't-font', ico: 'ico-type', label: 'FONT' };
+  }
+  if (lower.endsWith('.png') || lower.endsWith('.jpg') || lower.endsWith('.jpeg') || lower.endsWith('.webp')) {
+    return { cls: 't-img', ico: 'ico-image', label: 'ẢNH' };
+  }
+  const parts = it.name.split('.');
+  const ext = parts.length > 1 ? parts.pop().toUpperCase().slice(0, 6) : 'TỆP';
+  return { cls: 't-other', ico: 'ico-file', label: ext };
+}
+
+function renderBreadcrumbs(dir) {
+  const nav = document.getElementById('breadcrumbs');
+  const segs = dir.split('/').filter(Boolean);
+  let html = '<a class="crumb' + (segs.length === 0 ? ' current' : '') + '" onclick="goDir(\'/\')">/mnt/onboard</a>';
+  let acc = '';
+  for (let i = 0; i < segs.length; i++) {
+    acc += '/' + segs[i];
+    const isLast = (i === segs.length - 1);
+    const targetAttr = JSON.stringify(acc).replace(/"/g, '&quot;');
+    html += '<span class="crumb-sep"><svg class="ico ico-sm"><use href="#ico-chevron-right"/></svg></span>';
+    html += '<a class="crumb' + (isLast ? ' current' : '') + '" onclick="goDir(' + targetAttr + ')">' + escHtml(segs[i]) + '</a>';
+  }
+  nav.innerHTML = html;
+
+  document.querySelectorAll('#quickTabs .tab-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.getAttribute('data-dir') === dir);
+  });
+}
+
+function setSort(field) {
+  if (sortField === field) {
+    sortAsc = !sortAsc;
+  } else {
+    sortField = field;
+    sortAsc = (field === 'name');
+  }
+  ['name', 'size', 'mtime'].forEach(f => {
+    const el = document.getElementById('sort-' + f);
+    if (el) el.textContent = (f === sortField) ? (sortAsc ? '↑' : '↓') : '';
+  });
+  renderTable();
+}
+
+function renderTable() {
+  const tbody = document.getElementById('fileList');
+  const q = (document.getElementById('searchInput').value || '').trim().toLowerCase();
+  const filtered = currentItems.filter(it => !q || it.name.toLowerCase().includes(q));
+
+  filtered.sort((a, b) => {
+    if (a.is_dir !== b.is_dir) return a.is_dir ? -1 : 1;
+    let cmp = 0;
+    if (sortField === 'size') cmp = (a.size || 0) - (b.size || 0);
+    else if (sortField === 'mtime') cmp = (a.mtime || 0) - (b.mtime || 0);
+    else cmp = a.name.localeCompare(b.name, 'vi', { sensitivity: 'base' });
+    return sortAsc ? cmp : -cmp;
+  });
+
+  let dirCount = 0;
+  let fileCount = 0;
+  let totalBytes = 0;
+  for (const it of filtered) {
+    if (it.is_dir) dirCount++;
+    else { fileCount++; totalBytes += (it.size || 0); }
+  }
+  document.getElementById('summaryCount').textContent =
+    'Hiển thị ' + dirCount + ' thư mục, ' + fileCount + ' tệp';
+  document.getElementById('summarySize').textContent =
+    'Tổng dung lượng tệp: ' + fmtSize(totalBytes);
+
+  if (filtered.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--ink-muted);padding:32px">' +
+      (q ? 'Không tìm thấy tệp nào khớp từ khóa lọc.' : 'Thư mục này đang trống — kéo thả sách vào khung phía trên để tải lên.') +
+      '</td></tr>';
+    return;
+  }
+
+  let html = '';
+  for (const it of filtered) {
+    const fullRel = (currentDir === '/' ? '' : currentDir) + '/' + it.name;
+    const safeRelJs = JSON.stringify(fullRel).replace(/"/g, '&quot;');
+    const info = classifyItem(it);
+
+    if (it.is_dir) {
+      html += '<tr>' +
+        '<td><div class="item-cell">' +
+          '<span class="file-badge-ico ' + info.cls + '"><svg class="ico"><use href="#' + info.ico + '"/></svg></span>' +
+          '<a class="fname dir" href="#" onclick="goDir(' + safeRelJs + ');return false">' + escHtml(it.name) + '</a>' +
+        '</div></td>' +
+        '<td class="hide-sm"><span class="kind-pill ' + info.cls + '">' + info.label + '</span></td>' +
+        '<td class="meta">—</td>' +
+        '<td class="meta hide-sm">' + fmtDate(it.mtime) + '</td>' +
+        '<td class="acts"><div class="acts-inner">' +
+          '<button class="btn btn-sm ghost-danger" onclick="askDelete(' + safeRelJs + ', true)" title="Xóa thư mục trống">' +
+            '<svg class="ico ico-sm"><use href="#ico-trash"/></svg><span>Xóa</span>' +
+          '</button>' +
+        '</div></td>' +
+      '</tr>';
+    } else {
+      const dlUrl = '/api/download?path=' + encodeURIComponent(fullRel);
+      html += '<tr>' +
+        '<td><div class="item-cell">' +
+          '<span class="file-badge-ico ' + info.cls + '"><svg class="ico"><use href="#' + info.ico + '"/></svg></span>' +
+          '<a class="fname" href="' + dlUrl + '">' + escHtml(it.name) + '</a>' +
+        '</div></td>' +
+        '<td class="hide-sm"><span class="kind-pill ' + info.cls + '">' + info.label + '</span></td>' +
+        '<td class="meta">' + fmtSize(it.size) + '</td>' +
+        '<td class="meta hide-sm">' + fmtDate(it.mtime) + '</td>' +
+        '<td class="acts"><div class="acts-inner">' +
+          '<a class="btn btn-sm" href="' + dlUrl + '" title="Tải tệp về máy">' +
+            '<svg class="ico ico-sm"><use href="#ico-download"/></svg><span>Tải</span>' +
+          '</a>' +
+          '<button class="btn btn-sm ghost-danger" onclick="askDelete(' + safeRelJs + ', false)" title="Xóa tệp">' +
+            '<svg class="ico ico-sm"><use href="#ico-trash"/></svg><span>Xóa</span>' +
+          '</button>' +
+        '</div></td>' +
+      '</tr>';
+    }
+  }
+  tbody.innerHTML = html;
+}
+
+function goDir(dir) {
+  document.getElementById('searchInput').value = '';
+  loadDir(dir);
+}
+
+function goUp() {
+  if (!currentDir || currentDir === '/') return;
+  const idx = currentDir.lastIndexOf('/');
+  const parent = idx <= 0 ? '/' : currentDir.slice(0, idx);
+  goDir(parent);
+}
+
+async function loadDir(dir) {
+  try {
+    const showHidden = document.getElementById('showHidden').checked ? '1' : '0';
+    const res = await fetch('/api/list?dir=' + encodeURIComponent(dir) + '&hidden=' + showHidden);
+    const data = await res.json();
+    if (!data.ok) {
+      showToast(data.error || 'Không thể đọc thư mục yêu cầu', true);
+      return;
+    }
+    currentDir = data.dir || '/';
+    currentItems = data.items || [];
+    document.getElementById('uploadTargetLabel').textContent = currentDir;
+    renderBreadcrumbs(currentDir);
+
+    if (data.disk && data.disk.total_bytes > 0) {
+      const used = Math.max(0, data.disk.total_bytes - data.disk.free_bytes);
+      const pct = Math.min(100, Math.round((used * 100) / data.disk.total_bytes));
+      document.getElementById('diskFreeText').textContent =
+        'Trống ' + fmtSize(data.disk.free_bytes) + ' / ' + fmtSize(data.disk.total_bytes);
+      document.getElementById('diskFill').style.width = pct + '%';
+    }
+
+    renderTable();
+  } catch (e) {
+    showToast('Mất kết nối tới máy đọc sách Kobo: ' + e.message, true);
+  }
+}
+
+function uploadSingleFile(file, idx, total) {
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    const url = '/api/upload?dir=' + encodeURIComponent(currentDir) + '&name=' + encodeURIComponent(file.name);
+    const t0 = Date.now();
+    xhr.open('POST', url, true);
+    xhr.upload.onprogress = function(e) {
+      if (e.lengthComputable) {
+        const pct = Math.round((e.loaded * 100) / e.total);
+        const dt = Math.max(0.1, (Date.now() - t0) / 1000);
+        const speed = fmtSize(e.loaded / dt) + '/s';
+        document.getElementById('progBar').style.width = pct + '%';
+        document.getElementById('progName').textContent =
+          '[' + idx + '/' + total + '] ' + file.name + ' (' + fmtSize(e.loaded) + ' / ' + fmtSize(e.total) + ')';
+        document.getElementById('progSpeed').textContent = pct + '% • ' + speed;
+      }
+    };
+    xhr.onload = function() {
+      try {
+        const resp = JSON.parse(xhr.responseText || '{}');
+        if (xhr.status === 200 && resp.ok) resolve(resp);
+        else reject(new Error(resp.error || ('Mã lỗi HTTP ' + xhr.status)));
+      } catch (err) {
+        reject(err);
+      }
+    };
+    xhr.onerror = function() { reject(new Error('Ngắt kết nối mạng Wi-Fi khi đang truyền tệp')); };
+    xhr.send(file);
+  });
+}
+
+async function handleFiles(fileList) {
+  if (!fileList || fileList.length === 0 || uploading) return;
+  uploading = true;
+  const files = Array.from(fileList);
+  const progBox = document.getElementById('progBox');
+  progBox.style.display = 'block';
+  let okCount = 0;
+  try {
+    for (let i = 0; i < files.length; i++) {
+      document.getElementById('progBar').style.width = '0%';
+      await uploadSingleFile(files[i], i + 1, files.length);
+      okCount++;
+    }
+    showToast('Đã truyền hoàn tất ' + okCount + ' tệp vào ' + currentDir, false);
+  } catch (e) {
+    showToast('Lỗi truyền tệp: ' + e.message, true);
+  } finally {
+    uploading = false;
+    document.getElementById('fileInput').value = '';
+    setTimeout(() => { progBox.style.display = 'none'; }, 1600);
+    loadDir(currentDir);
+  }
+}
+
+function openFolderModal() {
+  document.getElementById('folderModalDir').textContent = currentDir;
+  const inp = document.getElementById('newFolderName');
+  inp.value = '';
+  document.getElementById('folderModal').classList.add('open');
+  setTimeout(() => inp.focus(), 40);
+}
+
+function closeFolderModal() {
+  document.getElementById('folderModal').classList.remove('open');
+}
+
+async function submitNewFolder() {
+  const name = (document.getElementById('newFolderName').value || '').trim();
+  if (!name) return;
+  closeFolderModal();
+  const res = await fetch('/api/mkdir?dir=' + encodeURIComponent(currentDir) + '&name=' + encodeURIComponent(name), { method: 'POST' });
+  const data = await res.json();
+  if (data.ok) {
+    showToast('Đã tạo thư mục mới: ' + data.name, false);
+    loadDir(currentDir);
+  } else {
+    showToast(data.error || 'Không thể tạo thư mục', true);
+  }
+}
+
+function askDelete(relPath, isDir) {
+  pendingDeletePath = relPath;
+  const el = document.getElementById('deleteModalMsg');
+  el.innerHTML = isDir
+    ? 'Bạn có chắc muốn xóa thư mục trống <code>' + escHtml(relPath) + '</code> khỏi bộ nhớ Kobo?'
+    : 'Bạn có chắc muốn xóa tệp <code>' + escHtml(relPath) + '</code> khỏi bộ nhớ Kobo? Thao tác này không thể hoàn tác.';
+  document.getElementById('deleteModal').classList.add('open');
+}
+
+function closeDeleteModal() {
+  pendingDeletePath = null;
+  document.getElementById('deleteModal').classList.remove('open');
+}
+
+async function confirmDelete() {
+  if (!pendingDeletePath) return;
+  const relPath = pendingDeletePath;
+  closeDeleteModal();
+  const res = await fetch('/api/delete?path=' + encodeURIComponent(relPath), { method: 'POST' });
+  const data = await res.json();
+  if (data.ok) {
+    showToast('Đã xóa: ' + relPath, false);
+    loadDir(currentDir);
+  } else {
+    showToast(data.error || 'Không thể xóa (thư mục cần phải trống trước khi xóa)', true);
+  }
+}
+
+document.getElementById('fileInput').addEventListener('change', e => handleFiles(e.target.files));
+const dz = document.getElementById('dropzone');
+dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('drag'); });
+dz.addEventListener('dragleave', () => dz.classList.remove('drag'));
+dz.addEventListener('drop', e => {
+  e.preventDefault();
+  dz.classList.remove('drag');
+  handleFiles(e.dataTransfer.files);
+});
+
+loadDir('/Books');
+</script>
+</body>
+</html>
