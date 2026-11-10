@@ -47,6 +47,9 @@ if [ -f "$FTP_PID_FILE" ]; then
     fi
     rm -f "$FTP_PID_FILE"
 fi
+if pkill -f "ftpd.lua" 2>/dev/null; then
+    STOPPED=1
+fi
 if pkill -f "tcpsvd -E 0.0.0.0 1021" 2>/dev/null; then
     STOPPED=1
 fi
@@ -60,10 +63,13 @@ fi
 echo "=== Wireless Studio Runtime $(date) ===" > "$RUN_LOG"
 disable_wifi_powersave
 
-# 3. Set local FTP password 'kobo' for account 'root'
+# 3. Set local FTP password 'kobo' for account 'root' (in both /etc/passwd and /etc/shadow for fallback compatibility)
 KOBO_HASH='$1$kobo2026$Kc8fD66oCt5khtyrZ1ekE0'
 if [ -f /etc/shadow ]; then
     [ -f /etc/shadow.kobo.bak ] || cp -pf /etc/shadow /etc/shadow.kobo.bak 2>/dev/null
+    [ -f /etc/passwd.kobo.bak ] || cp -pf /etc/passwd /etc/passwd.kobo.bak 2>/dev/null
+    awk -F: -v OFS=: '$1=="root"{$2="x"} {print}' /etc/passwd > /tmp/passwd.kobo.tmp && \
+        cp -f /tmp/passwd.kobo.tmp /etc/passwd && rm -f /tmp/passwd.kobo.tmp
     awk -F: -v OFS=: -v h="$KOBO_HASH" '$1=="root"{$2=h} {print}' /etc/shadow > /tmp/shadow.kobo.tmp && \
         cp -f /tmp/shadow.kobo.tmp /etc/shadow && rm -f /tmp/shadow.kobo.tmp
 else
@@ -81,12 +87,25 @@ fi
 WPID=$!
 echo "$WPID" > "$WEB_PID_FILE"
 
-# 5. Launch BusyBox FTP Server (:1021) with cwd in /tmp
-(
-    cd /tmp || exit 1
-    exec /usr/bin/tcpsvd -E 0.0.0.0 1021 /usr/sbin/ftpd -w -t 600 /mnt/onboard
-) </dev/null >>"$RUN_LOG" 2>&1 &
-echo $! > "$FTP_PID_FILE"
+# 5. Launch Pure LuaJIT FTP Server (:1021) — ftpd.lua immediately chdirs to /tmp & supports anonymous + root:kobo
+if [ -f /mnt/onboard/.adds/tools/ftpd.lua ] && [ -x /mnt/onboard/.adds/koreader/luajit ]; then
+    (
+        cd /mnt/onboard/.adds/koreader || exit 1
+        export LD_LIBRARY_PATH="/mnt/onboard/.adds/koreader/libs:${LD_LIBRARY_PATH}"
+        exec /mnt/onboard/.adds/koreader/luajit /mnt/onboard/.adds/tools/ftpd.lua
+    ) </dev/null >>"$RUN_LOG" 2>&1 &
+    echo $! > "$FTP_PID_FILE"
+else
+    (
+        cd /tmp || exit 1
+        if /usr/sbin/ftpd --help 2>&1 | grep -q -- "-a"; then
+            exec /usr/bin/tcpsvd -E 0.0.0.0 1021 /usr/sbin/ftpd -a root -w -t 600 /mnt/onboard
+        else
+            exec /usr/bin/tcpsvd -E 0.0.0.0 1021 /usr/sbin/ftpd -w -t 600 /mnt/onboard
+        fi
+    ) </dev/null >>"$RUN_LOG" 2>&1 &
+    echo $! > "$FTP_PID_FILE"
+fi
 
 # 6. Dual-band Smart-Connect router bridge & ARP keepalive while service is active
 (
@@ -125,6 +144,18 @@ while [ "$i" -lt 8 ]; do
     if [ "$WEB_OK" -eq 1 ] && [ "$FTP_OK" -eq 1 ]; then
         break
     fi
+    # Fallback to BusyBox ftpd if ftpd.lua didn't bind by iteration 4
+    if [ "$i" -eq 4 ] && [ "$FTP_OK" -eq 0 ]; then
+        (
+            cd /tmp || exit 1
+            if /usr/sbin/ftpd --help 2>&1 | grep -q -- "-a"; then
+                exec /usr/bin/tcpsvd -E 0.0.0.0 1021 /usr/sbin/ftpd -a root -w -t 600 /mnt/onboard
+            else
+                exec /usr/bin/tcpsvd -E 0.0.0.0 1021 /usr/sbin/ftpd -w -t 600 /mnt/onboard
+            fi
+        ) </dev/null >>"$RUN_LOG" 2>&1 &
+        echo $! > "$FTP_PID_FILE"
+    fi
     usleep 250000 2>/dev/null || sleep 1
     i=$((i + 1))
 done
@@ -137,6 +168,13 @@ fi
 SSID=$(wpa_cli status 2>/dev/null | /usr/bin/awk -F= '$1=="ssid"{print $2; exit}')
 [ -z "$SSID" ] && SSID=$(iwgetid -r 2>/dev/null)
 
+# Write one-shot snapshot and close immediately (never holds /mnt/onboard open)
+{
+    echo "=== V6 Snapshot $(date) | WEB_OK=${WEB_OK} FTP_OK=${FTP_OK} IP=${IP} SSID=${SSID} ==="
+    cat "$RUN_LOG" 2>/dev/null
+    grep -E ":1F90 |:03FD " /proc/net/tcp 2>/dev/null
+} > "$SNAP_LOG" 2>/dev/null
+
 if [ "$WEB_OK" -eq 1 ] && [ "$FTP_OK" -eq 1 ]; then
     if [ -n "$IP" ]; then
         echo "ĐÃ BẬT WEB & FTP QUA WI-FI!"
@@ -146,12 +184,12 @@ if [ "$WEB_OK" -eq 1 ] && [ "$FTP_OK" -eq 1 ]; then
             echo "IP hiện tại: ${IP}"
         fi
         echo ""
-        echo "1. Web Studio:"
+        echo "1. Web Studio (Trình duyệt):"
         echo "   http://${IP}:8080"
         echo ""
         echo "2. FTP (File Explorer / FileZilla):"
-        echo "   ftp://root:kobo@${IP}:1021"
-        echo "   (TK: root  |  Mật khẩu: kobo)"
+        echo "   ftp://${IP}:1021/"
+        echo "   (Vào thẳng hoặc TK: root / MK: kobo)"
     else
         echo "CHÚ Ý: KOBO CHƯA CÓ IP WI-FI!"
         echo "(Web :8080 & FTP :1021 đã bật chờ sẵn)"

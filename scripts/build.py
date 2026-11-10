@@ -619,4 +619,13 @@ assert 'path_part == "/api/reload"' in new_lua, "Missing /api/reload hot-swap ro
 out_lua = DIST_DIR / "kobo_overlay" / ".adds" / "tools" / "webfiles.lua"
 out_lua.parent.mkdir(parents=True, exist_ok=True)
 out_lua.write_bytes(new_lua.replace("\r\n", "\n").encode("utf-8"))
-print(f"Built {out_lua.relative_to(ROOT_DIR)} ({out_lua.stat().st_size:,} bytes) & {standalone_path.relative_to(ROOT_DIR)} successfully!")
+
+ftpd_src = (SRC_DIR / "ftpd.lua").read_text(encoding="utf-8")
+out_ftpd = DIST_DIR / "kobo_overlay" / ".adds" / "tools" / "ftpd.lua"
+out_ftpd.write_bytes(ftpd_src.replace("\r\n", "\n").encode("utf-8"))
+
+wifi_src = (SRC_DIR / "wifi_files.sh").read_text(encoding="utf-8")
+out_wifi = DIST_DIR / "kobo_overlay" / ".adds" / "tools" / "wifi_files.sh"
+out_wifi.write_bytes(wifi_src.replace("\r\n", "\n").encode("utf-8"))
+
+print(f"Built {out_lua.relative_to(ROOT_DIR)} ({out_lua.stat().st_size:,} bytes), {out_ftpd.relative_to(ROOT_DIR)} ({out_ftpd.stat().st_size:,} bytes) & {standalone_path.relative_to(ROOT_DIR)} successfully!")

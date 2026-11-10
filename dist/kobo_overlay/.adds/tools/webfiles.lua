@@ -1491,10 +1491,14 @@ th.col-acts { width: 234px; }
       </p>
 
       <div class="ftp-uri-box">
-        <code class="ftp-uri-code" id="ftpFullUri">ftp://root:kobo@192.168.1.100:1021</code>
+        <code class="ftp-uri-code" id="ftpFullUri">ftp://192.168.1.100:1021/</code>
         <button class="btn btn-sm primary" onclick="copyText(getFtpUri(), this)">
           <svg class="ico ico-sm"><use href="#ico-copy"/></svg>
           <span>Sao chép</span>
+        </button>
+        <button class="btn btn-sm" onclick="downloadWinFtpLauncher()" title="Tải tệp mở trực tiếp FTP trong Windows File Explorer (khắc phục lỗi nhảy sang trình duyệt Edge/Chrome)">
+          <svg class="ico ico-sm"><use href="#ico-folder"/></svg>
+          <span>Mở bằng Explorer</span>
         </button>
       </div>
 
@@ -1515,18 +1519,18 @@ th.col-acts { width: 234px; }
           <svg class="ico ico-sm"><use href="#ico-copy"/></svg>
         </div>
 
-        <div class="ftp-cell" onclick="copyText('root', this)" title="Bấm để sao chép tài khoản">
+        <div class="ftp-cell" onclick="copyText('root', this)" title="Bấm để sao chép tài khoản (hoặc vào ẩn danh không cần MK)">
           <div>
             <span class="ftp-lbl">Tài khoản</span>
-            <span class="ftp-val">root</span>
+            <span class="ftp-val">root / Ẩn danh</span>
           </div>
           <svg class="ico ico-sm"><use href="#ico-copy"/></svg>
         </div>
 
-        <div class="ftp-cell" onclick="copyText('kobo', this)" title="Bấm để sao chép mật khẩu">
+        <div class="ftp-cell" onclick="copyText('kobo', this)" title="Bấm để sao chép mật khẩu (hoặc để trống)">
           <div>
             <span class="ftp-lbl">Mật khẩu</span>
-            <span class="ftp-val">kobo</span>
+            <span class="ftp-val">kobo / Trống</span>
           </div>
           <svg class="ico ico-sm"><use href="#ico-copy"/></svg>
         </div>
@@ -1534,7 +1538,7 @@ th.col-acts { width: 234px; }
 
       <div class="note-bar" style="margin-top:11px">
         <svg class="ico"><use href="#ico-drive"/></svg>
-        <div>Dán thẳng địa chỉ <code>ftp://...</code> ở trên vào thanh địa chỉ <strong>This PC (File Explorer)</strong> trên Windows để mở như ổ đĩa.</div>
+        <div><strong>Lưu ý:</strong> Trình duyệt (Chrome/Edge) không mở được giao thức <code>ftp://</code>. Hãy dán vào thanh địa chỉ <strong>This PC (File Explorer)</strong>, dùng <strong>FileZilla/WinSCP</strong>, hoặc bấm <strong>Mở bằng Explorer</strong> ở trên.</div>
       </div>
     </div>
   </section>
@@ -1724,7 +1728,27 @@ function getHostIp() {
 }
 
 function getFtpUri() {
-  return 'ftp://root:kobo@' + getHostIp() + ':1021';
+  return 'ftp://' + getHostIp() + ':1021/';
+}
+
+function downloadWinFtpLauncher() {
+  const ip = getHostIp();
+  const bat = [
+    '@echo off',
+    'reg delete "HKCU\\Software\\Microsoft\\Windows\\Shell\\Associations\\UrlAssociations\\ftp\\UserChoice" /f >nul 2>&1',
+    'explorer.exe "ftp://' + ip + ':1021/"'
+  ].join('\r\n') + '\r\n';
+  const blob = new Blob([bat], { type: 'application/x-bat' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'Mo_FTP_Kobo_' + ip + '.bat';
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(() => {
+    URL.revokeObjectURL(a.href);
+    a.remove();
+  }, 1500);
+  showToast('Đã tải tệp mở nhanh FTP cho Windows Explorer!', false);
 }
 
 function initHostLabels() {
