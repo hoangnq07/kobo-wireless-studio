@@ -38,6 +38,28 @@ end
 -- Move cwd to /tmp so /mnt/onboard is never held busy when plugging USB
 pcall(lfs.chdir, "/tmp")
 
+local function apply_kobo_memfix()
+    pcall(function()
+        local f1 = io.open("/proc/sys/vm/overcommit_memory", "wb")
+        if f1 then f1:write("1\n"); f1:close() end
+        local f2 = io.open("/proc/sys/vm/drop_caches", "wb")
+        if f2 then f2:write("3\n"); f2:close() end
+        local rule_path = "/etc/udev/rules.d/99-kobo-memfix.rules"
+        if lfs.attributes("/etc/udev/rules.d", "mode") == "directory"
+           and not lfs.attributes(rule_path) then
+            local rf = io.open(rule_path, "wb")
+            if rf then
+                rf:write(
+                    'SUBSYSTEM=="block", RUN+="/bin/sh -c \'echo 1 > /proc/sys/vm/overcommit_memory\'"\n' ..
+                    'SUBSYSTEM=="power_supply", ACTION=="change", RUN+="/bin/sh -c \'echo 1 > /proc/sys/vm/overcommit_memory; echo 3 > /proc/sys/vm/drop_caches\'"\n'
+                )
+                rf:close()
+            end
+        end
+    end)
+end
+apply_kobo_memfix()
+
 local function url_decode(s)
     if not s then return "" end
     s = s:gsub("%+", " ")
@@ -4671,6 +4693,7 @@ local function handle_client(client)
         handle_delete(client, query)
     elseif method == "POST" and path_part == "/api/reload" then
         drain_body(client, content_len)
+        apply_kobo_memfix()
         local rf = io.open(ROOT .. "/.adds/tools/webfiles.lua", "rb")
         local src = rf and rf:read("*a")
         if rf then rf:close() end

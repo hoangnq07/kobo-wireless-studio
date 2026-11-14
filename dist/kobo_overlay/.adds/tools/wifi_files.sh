@@ -19,6 +19,19 @@ disable_wifi_powersave() {
     done
 }
 
+# Fix 256MB RAM fork()/QProcess ENOMEM (NickelMenu "could not start process / check failed")
+apply_kobo_memfix() {
+    echo 1 > /proc/sys/vm/overcommit_memory 2>/dev/null
+    echo 3 > /proc/sys/vm/drop_caches 2>/dev/null
+    if [ ! -f /etc/udev/rules.d/99-kobo-memfix.rules ] && [ -d /etc/udev/rules.d ]; then
+        cat > /etc/udev/rules.d/99-kobo-memfix.rules <<'EOF' 2>/dev/null
+SUBSYSTEM=="block", RUN+="/bin/sh -c 'echo 1 > /proc/sys/vm/overcommit_memory'"
+SUBSYSTEM=="power_supply", ACTION=="change", RUN+="/bin/sh -c 'echo 1 > /proc/sys/vm/overcommit_memory; echo 3 > /proc/sys/vm/drop_caches'"
+EOF
+    fi
+}
+apply_kobo_memfix
+
 # Clean up any previous keepalive worker
 if [ -f "$KA_PID_FILE" ]; then
     KPID=$(cat "$KA_PID_FILE" 2>/dev/null)

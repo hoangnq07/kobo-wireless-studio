@@ -39,6 +39,25 @@ end
 -- Move cwd to /tmp immediately so /mnt/onboard is never held busy when plugging in USB
 pcall(lfs.chdir, "/tmp")
 
+pcall(function()
+    local f1 = io.open("/proc/sys/vm/overcommit_memory", "wb")
+    if f1 then f1:write("1\n"); f1:close() end
+    local f2 = io.open("/proc/sys/vm/drop_caches", "wb")
+    if f2 then f2:write("3\n"); f2:close() end
+    local rule_path = "/etc/udev/rules.d/99-kobo-memfix.rules"
+    if lfs.attributes("/etc/udev/rules.d", "mode") == "directory"
+       and not lfs.attributes(rule_path) then
+        local rf = io.open(rule_path, "wb")
+        if rf then
+            rf:write(
+                'SUBSYSTEM=="block", RUN+="/bin/sh -c \'echo 1 > /proc/sys/vm/overcommit_memory\'"\n' ..
+                'SUBSYSTEM=="power_supply", ACTION=="change", RUN+="/bin/sh -c \'echo 1 > /proc/sys/vm/overcommit_memory; echo 3 > /proc/sys/vm/drop_caches\'"\n'
+            )
+            rf:close()
+        end
+    end
+end)
+
 local MONTHS = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" }
 
 local function send_all(sock, data)
